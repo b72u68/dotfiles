@@ -1,2 +1,2 @@
 # wsl-dotfiles
-Personal configuration for bash shell, tmux, and NeoVim (or Vim)
+Personal configuration for bash shell, tmux, windows terminal, and NeoVim (or Vim)
