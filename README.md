@@ -2,6 +2,11 @@
 Personal configuration for bash shell, tmux, windows terminal, and NeoVim (or Vim)
 > This cheatsheet is summarized from personal experience and other online tutorials. It should not be considered as an official advice.
 
+## Cheatsheets
+1. [Tmux](https://github.com/b72u68/wsl-dotfiles#tmux)
+2. [NeoVim(Vim)](https://github.com/b72u68/wsl-dotfiles#neovim-vim)
+3. Windows Terminal (update soon)
+
 ## Tmux
 ### Session
 Start new session:
@@ -76,7 +81,7 @@ n                   go to next search result
 N                   go to previous search result
 ```
 
-### Copy and Paste
+### Editing
 ```bash
 y                   copy current highlight
 yy                  copy current line
@@ -84,19 +89,13 @@ yiw                 copy current word
 d{motion}           cut
 p                   paste after cursor
 P                   paste before cursor
-```
-
-### Delete
-```bash
 x                   delete current character
 dw                  delete current word
 dd                  delete current line
 <number>dd          delete <number> lines
-```
-
-### Replace
-```bash
 r                   replace current character
 cw                  delete curent word and go into insert mode
 cc                  delete current line and go into insert mode
+u                   undo changes
+Ctrl + r            restore the undo
 ```
