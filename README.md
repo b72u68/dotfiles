@@ -1,8 +1,8 @@
 # wsl-dotfiles
 Personal configuration for bash shell, tmux, windows terminal, and NeoVim (or Vim)
-> This cheatsheet is summarized from personal experience and other online tutorials. It should not be considered as an official advice.
 
 ## Cheatsheets
+> This cheatsheet is summarized from personal experience and other online tutorials. It should not be considered as an official advice.
 * [Tmux](https://github.com/b72u68/wsl-dotfiles#tmux)
 * [NeoVim(Vim)](https://github.com/b72u68/wsl-dotfiles#neovim-vim)
 * Windows Terminal (update soon)
