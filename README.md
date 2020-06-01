@@ -5,24 +5,40 @@ Personal configuration for bash shell, tmux, windows terminal, and NeoVim (or Vi
 ## Tmux
 ### Session
 Start new session:
+
     tmux
+
 Start new session 
+
     tmux new -s myname
+
 Attach:
+
     tmux a
+
 Attach to specific session:
+
     tmux a -t myname
+
 List sessions:
+
     tmux ls
+
 Kill specific session:
+
     tmux kill-session -t myname
+
 Kill other sessions except working session:
+
     tmux kill-session -a
 
 ### Windows
 Kill specific window:
+
     tmux kill-window -t myname
+
 Kill other windows except working window:
+
     tmux kill-window -a
 
 ### Important Shortcuts and Remapping
