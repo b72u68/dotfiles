@@ -48,7 +48,7 @@ Kill other windows except working window:
 
 ### Important Shortcuts and Remapping
 ```bash
-Ctrl + a            prefix (default prefix is Ctrl + c)
+Ctrl + a            prefix (default prefix Ctrl + c)
 prefix + |          split window vertically
 prefix + -          split window horizontally
 prefix + r          load configuration file
