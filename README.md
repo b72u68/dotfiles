@@ -75,7 +75,7 @@ P                   paste before cursor
 x                   delete current character
 dw                  delete current word
 dd                  delete current line
-{number}dd          delete {number} lines
+<number>dd          delete <number> lines
 ```
 
 ### Replace
