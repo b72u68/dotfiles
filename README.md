@@ -3,9 +3,9 @@ Personal configuration for bash shell, tmux, windows terminal, and NeoVim (or Vi
 > This cheatsheet is summarized from personal experience and other online tutorials. It should not be considered as an official advice.
 
 ## Cheatsheets
-1. [Tmux](https://github.com/b72u68/wsl-dotfiles#tmux)
-2. [NeoVim(Vim)](https://github.com/b72u68/wsl-dotfiles#neovim-vim)
-3. Windows Terminal (update soon)
+* [Tmux](https://github.com/b72u68/wsl-dotfiles#tmux)
+* [NeoVim(Vim)](https://github.com/b72u68/wsl-dotfiles#neovim-vim)
+* Windows Terminal (update soon)
 
 ## Tmux
 ### Session
