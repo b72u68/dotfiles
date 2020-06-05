@@ -109,7 +109,6 @@ set wildmode=longest:full,full
 set lazyredraw				" redraw screen when needed 
 
 set showmatch				" highlight matching [({})]
-highlight MatchParen cterm=bold ctermfg=White ctermbg=Blue
 
 set cursorline
 
@@ -233,8 +232,8 @@ let g:gitgutter_sign_removed = '-'
 nmap ) <Plug>(GitGutterNextHunk)
 nmap ( <Plug>(GitGutterPrevHunk)
  
+"let g:gitgutter_realtime=1
 let g:gitgutter_enabled=1
-let g:gitgutter_realtime=1
 let g:gitgutter_map_keys=0
 
 
