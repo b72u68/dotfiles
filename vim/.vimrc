@@ -6,13 +6,14 @@ call plug#begin('~/.vim/plugged')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " plugins for programming 
+Plug 'plasticboy/vim-markdown'
 Plug 'lervag/vimtex'
 Plug 'dense-analysis/ale'
-Plug 'jiangmiao/auto-pairs'
-Plug 'airblade/vim-gitgutter'
+Plug 'vim-python/python-syntax'
 
-" auto comment codes
-Plug 'preservim/nerdcommenter'
+" version control
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
 
 " directory tree for vim
 Plug 'preservim/nerdtree'
@@ -27,11 +28,11 @@ Plug 'gruvbox-community/gruvbox'
 " vim status line
 Plug 'itchyny/lightline.vim'
 
-" syntax higlighting
-Plug 'vim-python/python-syntax'
-
 " utilities
-Plug 'tpope/vim-surround'
+Plug 'rking/ag.vim'
+Plug 'jiangmiao/auto-pairs'
+Plug 'tpope/vim-surround' 
+Plug 'preservim/nerdcommenter'
 
 call plug#end()
 
@@ -118,7 +119,6 @@ set mouse=a			    	" enable mouse for all mode
 " split panes open bottom and right
 set splitbelow splitright
 
-" restore setting for cursor
 set guicursor=
 
 
@@ -129,23 +129,6 @@ set hlsearch				" highlight matches
 
 set ignorecase				" insensitive case searching
 set smartcase				" insensitive case searching
-
-
-" __________ CUSTOM THINGS TO REMIND ME HOW TO DO VIM THE RIGHT WAY __________
-
-" Try to prevent bad habits like using the arrow keys for movement. 
-
-" Do this in normal mode...
-nnoremap <Left>  :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up>    :echoe "Use k"<CR>
-nnoremap <Down>  :echoe "Use j"<CR>
-
-" ...and in insert mode
-inoremap <Left>  <ESC>:echoe "Use h"<CR>
-inoremap <Right> <ESC>:echoe "Use l"<CR>
-inoremap <Up>    <ESC>:echoe "Use k"<CR>
-inoremap <Down>  <ESC>:echoe "Use j"<CR>
 
 
 " __________ FILES/PLUGINS CONFIG __________
@@ -165,7 +148,7 @@ let g:python_highlight_space_errors = 0
 set hidden
 set nobackup
 set nowritebackup
-set updatetime=300
+set updatetime=100
 set shortmess+=c
 
 " displaying documentation
@@ -220,8 +203,15 @@ autocmd BufEnter * call NERDTreeRefresh()
 
 " setting for lightline
 let g:lightline={
-            \ 'colorscheme' : 'gruvbox',
-            \}
+    \ 'colorscheme' : 'gruvbox',
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
+    \ },
+    \ 'component': {
+    \ 'fugitive': '%{exists("*FugitiveHead")?FugitiveHead():""}'
+    \ },
+    \ }
 
 " setting for fzf
 nnoremap <C-p> :Files<CR>
@@ -230,19 +220,39 @@ nnoremap <C-p> :Files<CR>
 nmap <leader>cs <plug>NERDCommenterToggle
 nmap <leader>cu <plug>NERDCommenterUncomment
 
-" setting for ALE
-let g:ale_linters = {
-            \ 'python': ['pylint'],
-            \}
-
 " setting for vim-gitgutter
 highlight GitGutterAdd guifg=#009900 ctermfg=Green
 highlight GitGutterChange guifg=#bbbb00 ctermfg=Yellow
 highlight GitGutterDelete guifg=#ff2222 ctermfg=Red
+highlight GitGutterChangeDelete guifg=#ff2222 ctermfg=Red
+
+let g:gitgutter_sign_added = '+'
+let g:gitgutter_sign_modified = '~'
+let g:gitgutter_sign_removed = '-'
+
 nmap ) <Plug>(GitGutterNextHunk)
 nmap ( <Plug>(GitGutterPrevHunk)
+ 
 let g:gitgutter_enabled=1
+let g:gitgutter_realtime=1
 let g:gitgutter_map_keys=0
+
+
+" __________ CUSTOM THINGS TO REMIND ME HOW TO DO VIM THE RIGHT WAY __________
+
+" Try to prevent bad habits like using the arrow keys for movement. 
+
+" Do this in normal mode...
+nnoremap <Left>  :echoe "Use h"<CR>
+nnoremap <Right> :echoe "Use l"<CR>
+nnoremap <Up>    :echoe "Use k"<CR>
+nnoremap <Down>  :echoe "Use j"<CR>
+
+" ...and in insert mode
+inoremap <Left>  <ESC>:echoe "Use h"<CR>
+inoremap <Right> <ESC>:echoe "Use l"<CR>
+inoremap <Up>    <ESC>:echoe "Use k"<CR>
+inoremap <Down>  <ESC>:echoe "Use j"<CR>
 
 
 " __________ VIM CHEATSHEET  __________
