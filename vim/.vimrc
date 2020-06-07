@@ -9,7 +9,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'plasticboy/vim-markdown'
 Plug 'lervag/vimtex'
 Plug 'dense-analysis/ale'
-Plug 'vim-python/python-syntax'
+Plug 'sheerun/vim-polyglot'
+"Plug 'vim-python/python-syntax'
 
 " version control
 Plug 'airblade/vim-gitgutter'
@@ -70,8 +71,8 @@ if (has("termguicolors"))
     set termguicolors
 endif
 
-colorscheme gruvbox
 set background=dark
+colorscheme gruvbox
 
 hi Normal guibg=NONE ctermbg=NONE
 
@@ -190,6 +191,9 @@ map <C-f> :NERDTreeFind<CR>
 
 let NERDTreeShowHidden=1
 let NERDTreeIgnore=['__pycache__', '\.swp', '*\.swp']
+
+let g:NERDTreeDirArrowExpandable='+'
+let g:NERDTreeDirArrowCollapsible='-'
 
 " auto refresh NERDTree after creating new files
 function! NERDTreeRefresh()
