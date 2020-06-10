@@ -9,8 +9,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'plasticboy/vim-markdown'
 Plug 'lervag/vimtex'
 Plug 'dense-analysis/ale'
-Plug 'sheerun/vim-polyglot'
-"Plug 'vim-python/python-syntax'
+"Plug 'sheerun/vim-polyglot'
+Plug 'vim-python/python-syntax'
 
 " version control
 Plug 'airblade/vim-gitgutter'
