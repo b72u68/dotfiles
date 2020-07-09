@@ -1,16 +1,20 @@
 " __________ PLUGINS __________
 
-call plug#begin('~/.vim/plugged')                   
+call plug#begin('~/.vim/plugged')
 
 " code completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" plugins for programming 
-Plug 'plasticboy/vim-markdown'
+" programming language highlighting
 Plug 'lervag/vimtex'
+"Plug 'vim-python/python-syntax'
+"Plug 'vim-jp/vim-cpp'
+"Plug 'octol/vim-cpp-enhanced-highlight'
+"Plug 'pangloss/vim-javascript'
+Plug 'sheerun/vim-polyglot'
+
+" linter
 Plug 'dense-analysis/ale'
-"Plug 'sheerun/vim-polyglot'
-Plug 'vim-python/python-syntax'
 
 " version control
 Plug 'airblade/vim-gitgutter'
@@ -25,6 +29,7 @@ Plug 'junegunn/fzf.vim'
 
 " nice colorscheme
 Plug 'gruvbox-community/gruvbox'
+Plug 'sainnhe/gruvbox-material'
 
 " vim status line
 Plug 'itchyny/lightline.vim'
@@ -32,7 +37,7 @@ Plug 'itchyny/lightline.vim'
 " utilities
 Plug 'rking/ag.vim'
 Plug 'jiangmiao/auto-pairs'
-Plug 'tpope/vim-surround' 
+Plug 'tpope/vim-surround'
 Plug 'preservim/nerdcommenter'
 
 call plug#end()
@@ -64,15 +69,22 @@ map <leader>w :w<CR>
 
 " __________ BASIC SETTINGS __________
 
-syntax on   		    	" set syntax coloring theme to default
+syntax on                   " set syntax coloring theme to default
 
-" set color scheme 
+" ColorScheme
 if (has("termguicolors"))
     set termguicolors
 endif
 
-set background=dark
+let g:gruvbox_contrast_dark='hard'
+if exists('+termguicolors')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+endif
+let g:gruvbox_invert_selection='0'
+
 colorscheme gruvbox
+set background=dark
 
 hi Normal guibg=NONE ctermbg=NONE
 
@@ -86,34 +98,22 @@ set softtabstop=4			" set number of spaces per TAB while editing
 set shiftwidth=4			" set space width for auto indent
 set expandtab				" set TABs to spaces (TAB is four spaces)
 set backspace=indent,eol,start		" allow backspacing over everything in insert mode
-set nojoinspaces            " suppress inserting two spaces between sentences
 
 
-" UI Configurations 
+" UI Configurations
 
 set nocompatible
 set history=9000
-
 set encoding=utf-8
-
 set colorcolumn=80          " enable color column
-
 set number			    	" set line numbers
 set rnu                     " relative number of line
-highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE
-
 filetype indent on			" set filetype specific indent
-
 set wildmenu				" visual autocomplete for command menu
 set wildmode=longest:full,full
-
-set lazyredraw				" redraw screen when needed 
-
+set lazyredraw				" redraw screen when needed
 set showmatch				" highlight matching [({})]
-
-set cursorline
-
-set visualbell				" flash screen when error 
+set visualbell				" flash screen when error
 set mouse=a			    	" enable mouse for all mode
 
 " split panes open bottom and right
@@ -126,7 +126,6 @@ set guicursor=
 
 set incsearch				" set incremental search (search as characters are entered)
 set hlsearch				" highlight matches
-
 set ignorecase				" insensitive case searching
 set smartcase				" insensitive case searching
 
@@ -138,7 +137,7 @@ set noswapfile
 " vim open .tex file as LaTeX file instead of plaintex file
 let g:tex_flavor = 'latex'
 
-" setting for python 
+" setting for python
 let g:pymode_python = 'python3'
 let g:python_highlight_all = 1
 let g:python_highlight_indent_errors = 0
@@ -148,18 +147,18 @@ let g:python_highlight_space_errors = 0
 set hidden
 set nobackup
 set nowritebackup
-set updatetime=100
+set updatetime=50
 set shortmess+=c
 
-" displaying documentation
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-function! s:show_documentation()
-    if (index(['vim','help'], &filetype) >= 0)
-        execute 'h '.expand('<cword>')
-    else
-        call CocAction('doHover')
-    endif
-endfunction
+"" displaying documentation
+"nnoremap <silent> K :call <SID>show_documentation()<CR>
+"function! s:show_documentation()
+    "if (index(['vim','help'], &filetype) >= 0)
+        "execute 'h '.expand('<cword>')
+    "else
+        "call CocAction('doHover')
+    "endif
+"endfunction
 
 " use TAB for autocompletion
 function! s:check_back_space() abort
@@ -174,7 +173,7 @@ inoremap <silent><expr> <Tab>
 
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-     
+
 " GoTo code navigation.
 nmap <silent> <leader>gd <Plug>(coc-definition)
 nmap <silent> <leader>gy <Plug>(coc-type-definition)
@@ -235,15 +234,29 @@ let g:gitgutter_sign_removed = '-'
 
 nmap ) <Plug>(GitGutterNextHunk)
 nmap ( <Plug>(GitGutterPrevHunk)
- 
+
 "let g:gitgutter_realtime=1
 let g:gitgutter_enabled=1
 let g:gitgutter_map_keys=0
 
+" setting for ale
+let g:ale_linters={
+            \ 'python3': ['pylint'],
+            \ 'javascript': ['eslint'],
+            \}
+
+" setting for coc-prettier
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+vmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+" setting for fugitive
+nmap <leader>gs :G<CR>
+
 
 " __________ CUSTOM THINGS TO REMIND ME HOW TO DO VIM THE RIGHT WAY __________
 
-" Try to prevent bad habits like using the arrow keys for movement. 
+" Try to prevent bad habits like using the arrow keys for movement.
 
 " Do this in normal mode...
 nnoremap <Left>  :echoe "Use h"<CR>
@@ -307,7 +320,7 @@ inoremap <Down>  <ESC>:echoe "Use j"<CR>
 " To REPLACE
 " r         - replace character under cursor
 " R         - enter Replace mode
-" ciw       - delete current word and go into insert mode 
+" ciw       - delete current word and go into insert mode
 
 " For KEY MAPPING
 " <BS>           Backspace
