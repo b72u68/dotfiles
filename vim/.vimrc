@@ -7,11 +7,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " programming language highlighting
 Plug 'lervag/vimtex'
-"Plug 'vim-python/python-syntax'
-"Plug 'vim-jp/vim-cpp'
-"Plug 'octol/vim-cpp-enhanced-highlight'
-"Plug 'pangloss/vim-javascript'
 Plug 'sheerun/vim-polyglot'
+Plug 'ap/vim-css-color'
 
 " linter
 Plug 'dense-analysis/ale'
@@ -32,6 +29,7 @@ Plug 'gruvbox-community/gruvbox'
 Plug 'sainnhe/gruvbox-material'
 
 " vim status line
+"Plug 'vim-airline/vim-airline'
 Plug 'itchyny/lightline.vim'
 
 " utilities
@@ -77,11 +75,12 @@ if (has("termguicolors"))
 endif
 
 let g:gruvbox_contrast_dark='hard'
+let g:gruvbox_invert_selection='0'
+
 if exists('+termguicolors')
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
-let g:gruvbox_invert_selection='0'
 
 colorscheme gruvbox
 set background=dark
@@ -115,6 +114,7 @@ set lazyredraw				" redraw screen when needed
 set showmatch				" highlight matching [({})]
 set visualbell				" flash screen when error
 set mouse=a			    	" enable mouse for all mode
+set cmdheight=2
 
 " split panes open bottom and right
 set splitbelow splitright
@@ -184,6 +184,10 @@ nnoremap <leader>cr :CocRestart
 " symbol renaming
 nmap <leader>rn <Plug>(coc-rename)
 
+" coc-snippets
+vmap <C-j> <Plug>(coc-snippets-select)
+let g:coc_snippet_next = '<tab>'
+
 " setting for NERDTree
 map <C-n> :NERDTreeToggle<CR>
 map <C-f> :NERDTreeFind<CR>
@@ -191,8 +195,8 @@ map <C-f> :NERDTreeFind<CR>
 let NERDTreeShowHidden=1
 let NERDTreeIgnore=['__pycache__', '\.swp', '*\.swp']
 
-let g:NERDTreeDirArrowExpandable='+'
-let g:NERDTreeDirArrowCollapsible='-'
+"let g:NERDTreeDirArrowExpandable='+'
+"let g:NERDTreeDirArrowCollapsible='-'
 
 " auto refresh NERDTree after creating new files
 function! NERDTreeRefresh()
@@ -216,7 +220,10 @@ let g:lightline={
     \ }
 
 " setting for fzf
-nnoremap <C-p> :Files<CR>
+nnoremap <leader>pf :Files<CR>
+let g:fzf_layout = { "window": { "width": 0.8, "height": 0.8 } }
+let $FZF_DEFAULT_OPTS="--reverse"
+unlet g:fzf_colors
 
 " setting for NERDCommenter
 nmap <leader>cs <plug>NERDCommenterToggle
@@ -235,9 +242,10 @@ let g:gitgutter_sign_removed = '-'
 nmap ) <Plug>(GitGutterNextHunk)
 nmap ( <Plug>(GitGutterPrevHunk)
 
-"let g:gitgutter_realtime=1
 let g:gitgutter_enabled=1
 let g:gitgutter_map_keys=0
+
+nnoremap <C-p> :GFiles<CR>
 
 " setting for ale
 let g:ale_linters={
@@ -252,6 +260,16 @@ nmap <leader>f  <Plug>(coc-format-selected)
 
 " setting for fugitive
 nmap <leader>gs :G<CR>
+
+" setting for searching (ag.vim and CocSearch)
+if executable('rg')
+    let g:rg_derive_root='true'
+endif
+
+nnoremap <leader>prw :CocSearch <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>pw :Rg <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>phw :h <C-R>=expand("<cword>")<CR><CR>
+nnoremap <Leader>ps :Rg<SPACE>
 
 
 " __________ CUSTOM THINGS TO REMIND ME HOW TO DO VIM THE RIGHT WAY __________
