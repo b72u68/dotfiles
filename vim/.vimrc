@@ -29,7 +29,6 @@ Plug 'gruvbox-community/gruvbox'
 Plug 'sainnhe/gruvbox-material'
 
 " vim status line
-"Plug 'vim-airline/vim-airline'
 Plug 'itchyny/lightline.vim'
 
 " utilities
@@ -64,6 +63,8 @@ map <leader>q :q<CR>
 " short key for saving file
 map <leader>w :w<CR>
 
+" executing python code
+nmap <leader>xp :!python3 %<CR>
 
 " __________ BASIC SETTINGS __________
 
@@ -129,6 +130,19 @@ set hlsearch				" highlight matches
 set ignorecase				" insensitive case searching
 set smartcase				" insensitive case searching
 
+fun! TrimWhitespace()
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfun
+
+augroup highlight_yank
+    autocmd!
+    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank()
+augroup END
+
+autocmd BufWritePre * :call TrimWhitespace()
+
 
 " __________ FILES/PLUGINS CONFIG __________
 
@@ -150,15 +164,8 @@ set nowritebackup
 set updatetime=50
 set shortmess+=c
 
-"" displaying documentation
-"nnoremap <silent> K :call <SID>show_documentation()<CR>
-"function! s:show_documentation()
-    "if (index(['vim','help'], &filetype) >= 0)
-        "execute 'h '.expand('<cword>')
-    "else
-        "call CocAction('doHover')
-    "endif
-"endfunction
+" vim-lsc setting
+let g:lsc_auto_map = v:true
 
 " use TAB for autocompletion
 function! s:check_back_space() abort
@@ -194,9 +201,6 @@ map <C-f> :NERDTreeFind<CR>
 
 let NERDTreeShowHidden=1
 let NERDTreeIgnore=['__pycache__', '\.swp', '*\.swp']
-
-"let g:NERDTreeDirArrowExpandable='+'
-"let g:NERDTreeDirArrowCollapsible='-'
 
 " auto refresh NERDTree after creating new files
 function! NERDTreeRefresh()
@@ -267,7 +271,7 @@ if executable('rg')
 endif
 
 nnoremap <leader>prw :CocSearch <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>pw :Rg <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>pw :Rg <C-R>\=expand("<cword>")<CR><CR>
 nnoremap <leader>phw :h <C-R>=expand("<cword>")<CR><CR>
 nnoremap <Leader>ps :Rg<SPACE>
 
