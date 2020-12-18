@@ -7,18 +7,11 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " programming language highlighting
 Plug 'lervag/vimtex'
-Plug 'sheerun/vim-polyglot'
 Plug 'ap/vim-css-color'
-
-" linter
-Plug 'dense-analysis/ale'
 
 " version control
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
-
-" directory tree for vim
-Plug 'preservim/nerdtree'
 
 " fuzzy files finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -26,7 +19,6 @@ Plug 'junegunn/fzf.vim'
 
 " nice colorscheme
 Plug 'gruvbox-community/gruvbox'
-Plug 'sainnhe/gruvbox-material'
 
 " vim status line
 Plug 'itchyny/lightline.vim'
@@ -34,8 +26,15 @@ Plug 'itchyny/lightline.vim'
 " utilities
 Plug 'rking/ag.vim'
 Plug 'jiangmiao/auto-pairs'
-Plug 'tpope/vim-surround'
 Plug 'preservim/nerdcommenter'
+
+" NeoVim Treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" NeoVim telescope
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-lua/telescope.nvim'
 
 call plug#end()
 
@@ -54,17 +53,22 @@ map <leader>j <C-w>j
 map <leader>k <C-w>k
 map <leader>l <C-w>l
 
-" toggle spell check using <leader>c ('c' for check)
-map <leader>cw :setlocal spell! spelllang=en_us<CR>
-
 " short key for exiting
 map <leader>q :q<CR>
 
 " short key for saving file
 map <leader>w :w<CR>
 
-" executing python code
-nmap <leader>xp :!python3 %<CR>
+" for directory tree
+let g:netrw_browse_split = 2
+let g:netrw_banner = 0
+let g:netrw_winsize = 25
+let g:netrw_localrmdir='rm -r'
+nnoremap <C-n> :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
+nnoremap <Leader>+ :vertical resize +5<CR>
+nnoremap <Leader>- :vertical resize -5<CR>
+nnoremap <Leader>rp :resize 100<CR>
+
 
 " __________ BASIC SETTINGS __________
 
@@ -86,11 +90,12 @@ endif
 colorscheme gruvbox
 set background=dark
 
+hi LineNr guifg=#5eacd3
 hi Normal guibg=NONE ctermbg=NONE
-
+highlight netrwDir guifg=#5eacd3
+highlight qfFileName guifg=#aed75f
 
 " Spaces and Tabs
-
 set autoindent				" set auto indent
 set smartindent		 	   	" set smart indent
 set tabstop=4				" set number of spaces per TAB
@@ -99,9 +104,7 @@ set shiftwidth=4			" set space width for auto indent
 set expandtab				" set TABs to spaces (TAB is four spaces)
 set backspace=indent,eol,start		" allow backspacing over everything in insert mode
 
-
 " UI Configurations
-
 set nocompatible
 set history=9000
 set encoding=utf-8
@@ -116,32 +119,13 @@ set showmatch				" highlight matching [({})]
 set visualbell				" flash screen when error
 set mouse=a			    	" enable mouse for all mode
 set cmdheight=2
-
-" split panes open bottom and right
-set splitbelow splitright
-
-set guicursor=
-
+set splitbelow 
 
 " Searching
-
 set incsearch				" set incremental search (search as characters are entered)
 set hlsearch				" highlight matches
 set ignorecase				" insensitive case searching
 set smartcase				" insensitive case searching
-
-fun! TrimWhitespace()
-    let l:save = winsaveview()
-    keeppatterns %s/\s\+$//e
-    call winrestview(l:save)
-endfun
-
-augroup highlight_yank
-    autocmd!
-    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank()
-augroup END
-
-autocmd BufWritePre * :call TrimWhitespace()
 
 
 " __________ FILES/PLUGINS CONFIG __________
@@ -195,22 +179,6 @@ nmap <leader>rn <Plug>(coc-rename)
 vmap <C-j> <Plug>(coc-snippets-select)
 let g:coc_snippet_next = '<tab>'
 
-" setting for NERDTree
-map <C-n> :NERDTreeToggle<CR>
-map <C-f> :NERDTreeFind<CR>
-
-let NERDTreeShowHidden=1
-let NERDTreeIgnore=['__pycache__', '\.swp', '*\.swp']
-
-" auto refresh NERDTree after creating new files
-function! NERDTreeRefresh()
-    if &filetype == 'nerdtree'
-        silent exe substitute(mapcheck("R"), '<CR>', '', '')
-    endif
-endfunction
-
-autocmd BufEnter * call NERDTreeRefresh()
-
 " setting for lightline
 let g:lightline={
     \ 'colorscheme' : 'gruvbox',
@@ -249,19 +217,6 @@ nmap ( <Plug>(GitGutterPrevHunk)
 let g:gitgutter_enabled=1
 let g:gitgutter_map_keys=0
 
-nnoremap <C-p> :GFiles<CR>
-
-" setting for ale
-let g:ale_linters={
-            \ 'python3': ['pylint'],
-            \ 'javascript': ['eslint'],
-            \}
-
-" setting for coc-prettier
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
-vmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
 " setting for fugitive
 nmap <leader>gs :G<CR>
 
@@ -270,10 +225,19 @@ if executable('rg')
     let g:rg_derive_root='true'
 endif
 
+"set treesitter syntax highlighting
+lua require'nvim-treesitter.configs'.setup { highlight = { enable = true } }
+
+" setting for telescope
+lua require('telescope').setup({defaults = {file_sorter = require('telescope.sorters').get_fzy_sorter}})
+nnoremap <leader>ghw :h <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>prw :CocSearch <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>pw :Rg <C-R>\=expand("<cword>")<CR><CR>
-nnoremap <leader>phw :h <C-R>=expand("<cword>")<CR><CR>
-nnoremap <Leader>ps :Rg<SPACE>
+nnoremap <leader>pw :lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>
+nnoremap <leader>pb :lua require('telescope.builtin').buffers()<CR>
+nnoremap <leader>vh :lua require('telescope.builtin').help_tags()<CR>
+nnoremap <leader>ps :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<CR>
+nnoremap <C-p> :lua require('telescope.builtin').git_files()<CR>
+nnoremap <Leader>pf :lua require('telescope.builtin').find_files()<CR>
 
 
 " __________ CUSTOM THINGS TO REMIND ME HOW TO DO VIM THE RIGHT WAY __________
