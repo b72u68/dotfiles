@@ -2,8 +2,9 @@
 
 call plug#begin('~/.vim/plugged')
 
-" code completion
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" autocompletion and lsp
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
 
 " programming language highlighting
 Plug 'lervag/vimtex'
@@ -25,8 +26,9 @@ Plug 'itchyny/lightline.vim'
 
 " utilities
 Plug 'rking/ag.vim'
-Plug 'jiangmiao/auto-pairs'
 Plug 'preservim/nerdcommenter'
+Plug 'szw/vim-maximizer'
+Plug 'mbbill/undotree'
 
 " NeoVim Treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -60,14 +62,26 @@ map <leader>q :q<CR>
 map <leader>w :w<CR>
 
 " for directory tree
-let g:netrw_browse_split = 2
-let g:netrw_banner = 0
-let g:netrw_winsize = 25
+let g:netrw_browse_split=2
+let g:netrw_banner=0
+let g:netrw_winsize=30
 let g:netrw_localrmdir='rm -r'
+let g:netrw_liststyle=3
+let g:netrw_list_hide='__pycache__,\.swp,*\.swp,.DS_Store'
 nnoremap <C-n> :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
-nnoremap <Leader>+ :vertical resize +5<CR>
-nnoremap <Leader>- :vertical resize -5<CR>
-nnoremap <Leader>rp :resize 100<CR>
+nnoremap <leader>+ :vertical resize +5<CR>
+nnoremap <leader>- :vertical resize -5<CR>
+nnoremap <leader>rp :resize 100<CR>
+
+" short key to open terminal
+nnoremap <leader>tu :botright vsplit<bar> :terminal<CR>
+nnoremap <leader>th :split<bar> :resize 10<bar> :terminal<CR>
+
+" focus on pane
+nnoremap <leader>m :MaximizerToggle!<CR>
+
+" call undotree
+nnoremap <leader>u :UndotreeShow<CR>
 
 
 " __________ BASIC SETTINGS __________
@@ -90,7 +104,7 @@ endif
 colorscheme gruvbox
 set background=dark
 
-hi LineNr guifg=#5eacd3
+hi LineNr guifg=#5eacd3 
 hi Normal guibg=NONE ctermbg=NONE
 highlight netrwDir guifg=#5eacd3
 highlight qfFileName guifg=#aed75f
@@ -119,13 +133,22 @@ set showmatch				" highlight matching [({})]
 set visualbell				" flash screen when error
 set mouse=a			    	" enable mouse for all mode
 set cmdheight=2
-set splitbelow 
+set splitbelow
 
 " Searching
 set incsearch				" set incremental search (search as characters are entered)
 set hlsearch				" highlight matches
 set ignorecase				" insensitive case searching
 set smartcase				" insensitive case searching
+
+" File writing and update
+set hidden
+set nobackup
+set nowritebackup
+set updatetime=50
+set shortmess+=c
+set undodir=~/.vim/undodir
+set undofile
 
 
 " __________ FILES/PLUGINS CONFIG __________
@@ -141,43 +164,26 @@ let g:python_highlight_all = 1
 let g:python_highlight_indent_errors = 0
 let g:python_highlight_space_errors = 0
 
-" setting for coc
-set hidden
-set nobackup
-set nowritebackup
-set updatetime=50
-set shortmess+=c
+" setting for nvim-lspconfig and completion-nvim
 
-" vim-lsc setting
-let g:lsc_auto_map = v:true
+" Set completeopt to have a better completion experience
+set completeopt=menuone,noinsert,noselect
 
-" use TAB for autocompletion
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
+let g:completion_matching_strategy_list=['exact', 'substring', 'fuzzy']
+lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
+lua require'lspconfig'.clangd.setup{ on_attach=require'completion'.on_attach }
+lua require'lspconfig'.pyls.setup{ on_attach=require'completion'.on_attach }
 
-inoremap <silent><expr> <Tab>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<Tab>" :
-    \ coc#refresh()
-
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-" GoTo code navigation.
-nmap <silent> <leader>gd <Plug>(coc-definition)
-nmap <silent> <leader>gy <Plug>(coc-type-definition)
-nmap <silent> <leader>gi <Plug>(coc-implementation)
-nmap <silent> <leader>gr <Plug>(coc-references)
-nnoremap <leader>cr :CocRestart
+let g:diagnostic_enable_virtual_text = 1
+let g:diagnostic_enable_underline = 0
+let g:diagnostic_auto_popup_while_jump = 1
 
-" symbol renaming
-nmap <leader>rn <Plug>(coc-rename)
-
-" coc-snippets
-vmap <C-j> <Plug>(coc-snippets-select)
-let g:coc_snippet_next = '<tab>'
+nnoremap <leader>gd :lua vim.lsp.buf.definition()<CR>
+nnoremap <leader>gn :lua vim.lsp.buf.rename()<CR>
 
 " setting for lightline
 let g:lightline={
@@ -231,13 +237,14 @@ lua require'nvim-treesitter.configs'.setup { highlight = { enable = true } }
 " setting for telescope
 lua require('telescope').setup({defaults = {file_sorter = require('telescope.sorters').get_fzy_sorter}})
 nnoremap <leader>ghw :h <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>prw :CocSearch <C-R>=expand("<cword>")<CR><CR>
 nnoremap <leader>pw :lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>
 nnoremap <leader>pb :lua require('telescope.builtin').buffers()<CR>
 nnoremap <leader>vh :lua require('telescope.builtin').help_tags()<CR>
 nnoremap <leader>ps :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<CR>
-nnoremap <C-p> :lua require('telescope.builtin').git_files()<CR>
-nnoremap <Leader>pf :lua require('telescope.builtin').find_files()<CR>
+"nnoremap <C-p> :lua require('telescope.builtin').git_files()<CR>
+"nnoremap <Leader>pf :lua require('telescope.builtin').find_files()<CR>
+nnoremap <C-p> :GFiles<CR>
+nnoremap <leader>pf :Files<CR>
 
 
 " __________ CUSTOM THINGS TO REMIND ME HOW TO DO VIM THE RIGHT WAY __________
@@ -258,12 +265,6 @@ inoremap <Down>  <ESC>:echoe "Use j"<CR>
 
 
 " __________ VIM CHEATSHEET  __________
-
-" To SPLIT (netrw)
-" Sex       - split horizontal file explorer
-" Sex!      - split vertical file explorer
-" Vex       - split vertical file explorer
-" Ctrl-ww   - switch windows
 
 " To MOVEMENT
 " gg        - go to top of page
@@ -307,25 +308,3 @@ inoremap <Down>  <ESC>:echoe "Use j"<CR>
 " r         - replace character under cursor
 " R         - enter Replace mode
 " ciw       - delete current word and go into insert mode
-
-" For KEY MAPPING
-" <BS>           Backspace
-" <Tab>          Tab
-" <CR>           Enter
-" <Enter>        Enter
-" <Return>       Enter
-" <Esc>          Escape
-" <Space>        Space
-" <Up>           Up arrow
-" <Down>         Down arrow
-" <Left>         Left arrow
-" <Right>        Right arrow
-" <F1> - <F12>   Function keys 1 to 12
-" #1, #2..#9,#0  Function keys F1 to F9, F10
-" <Insert>       Insert
-" <Del>          Delete
-" <Home>         Home
-" <End>          End
-" <PageUp>       Page-Up
-" <PageDown>     Page-Down
-" <bar>          the '|' character, which otherwise needs to be escaped '\|'
