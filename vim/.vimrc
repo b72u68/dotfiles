@@ -5,6 +5,7 @@ call plug#begin('~/.vim/plugged')
 " autocompletion and lsp
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " programming language highlighting
 Plug 'lervag/vimtex'
@@ -56,7 +57,7 @@ map <leader>k <C-w>k
 map <leader>l <C-w>l
 
 " short key for exiting
-map <leader>q :q<CR>
+map <leader>q :qa!<CR>
 
 " short key for saving file
 map <leader>w :w<CR>
@@ -175,6 +176,17 @@ lua require'lspconfig'.clangd.setup{ on_attach=require'completion'.on_attach }
 lua require'lspconfig'.pyls.setup{ on_attach=require'completion'.on_attach }
 
 " Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
@@ -236,15 +248,11 @@ lua require'nvim-treesitter.configs'.setup { highlight = { enable = true } }
 
 " setting for telescope
 lua require('telescope').setup({defaults = {file_sorter = require('telescope.sorters').get_fzy_sorter}})
-nnoremap <leader>ghw :h <C-R>=expand("<cword>")<CR><CR>
-nnoremap <leader>pw :lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>
-nnoremap <leader>pb :lua require('telescope.builtin').buffers()<CR>
-nnoremap <leader>vh :lua require('telescope.builtin').help_tags()<CR>
-nnoremap <leader>ps :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<CR>
-"nnoremap <C-p> :lua require('telescope.builtin').git_files()<CR>
-"nnoremap <Leader>pf :lua require('telescope.builtin').find_files()<CR>
+nnoremap <leader>pf :lua require('telescope.builtin').find_files()<cr>
+nnoremap <leader>pg :lua require('telescope.builtin').live_grep()<cr>
+nnoremap <leader>pb :lua require('telescope.builtin').buffers()<cr>
+nnoremap <leader>ph :lua require('telescope.builtin').help_tags()<cr>
 nnoremap <C-p> :GFiles<CR>
-nnoremap <leader>pf :Files<CR>
 
 
 " __________ CUSTOM THINGS TO REMIND ME HOW TO DO VIM THE RIGHT WAY __________
@@ -262,49 +270,3 @@ inoremap <Left>  <ESC>:echoe "Use h"<CR>
 inoremap <Right> <ESC>:echoe "Use l"<CR>
 inoremap <Up>    <ESC>:echoe "Use k"<CR>
 inoremap <Down>  <ESC>:echoe "Use j"<CR>
-
-
-" __________ VIM CHEATSHEET  __________
-
-" To MOVEMENT
-" gg        - go to top of page
-" G         - go to bottom of page
-" w         - go to beginning of next word
-" b         - go to beginning of previous word
-" 42gg      - go to line 42
-" 0         - go to beginning of line
-" $         - go to end of line
-" }         - go to next paragraph
-" {         - go to previous paragraph
-" g;        - go to previous edit (and up edit branch)
-
-" To SEARCH
-" /{string} - search for string
-" *         - search for current string
-" n         - go to next instance
-" N         - go to previous instance
-
-" To COPY
-" y         - copy current line
-" y$        - copy to end of current line
-" yiw       - copy current word
-" d{motion} - cut
-" p         - paste after cursor
-" P         - paste before cursor
-" Vp        - paste yanked line
-" yap       - copy current paragraph
-
-" To DELETE
-" x         - delete current character
-" dw        - delete current word
-" dd        - delete current line
-" 5dd       - delete five lines
-" d$        - delete until end of line
-" d0        - delete until beginning of line
-" dap       - delete current paragraph
-" dG        - delete to end of file
-
-" To REPLACE
-" r         - replace character under cursor
-" R         - enter Replace mode
-" ciw       - delete current word and go into insert mode
