@@ -8,7 +8,6 @@ Plug 'nvim-lua/completion-nvim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " programming language highlighting
-Plug 'lervag/vimtex'
 Plug 'ap/vim-css-color'
 
 " version control
@@ -57,7 +56,7 @@ map <leader>k <C-w>k
 map <leader>l <C-w>l
 
 " short key for exiting
-map <leader>q :qa!<CR>
+map <leader>q :q!<CR>
 
 " short key for saving file
 map <leader>w :w<CR>
@@ -69,7 +68,7 @@ let g:netrw_winsize=30
 let g:netrw_localrmdir='rm -r'
 let g:netrw_liststyle=3
 let g:netrw_list_hide='__pycache__,\.swp,*\.swp,.DS_Store'
-nnoremap <C-n> :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
+nnoremap <C-n> :vsplit <bar> :Ex <bar> :vertical resize 30<CR>
 nnoremap <leader>+ :vertical resize +5<CR>
 nnoremap <leader>- :vertical resize -5<CR>
 nnoremap <leader>rp :resize 100<CR>
@@ -83,6 +82,9 @@ nnoremap <leader>m :MaximizerToggle!<CR>
 
 " call undotree
 nnoremap <leader>u :UndotreeShow<CR>
+
+" force reload lsp
+nnoremap <leader>rl :lua vim.lsp.stop_client(vim.lsp.get_active_clients())<CR><bar> :edit<CR>
 
 
 " __________ BASIC SETTINGS __________
@@ -105,7 +107,7 @@ endif
 colorscheme gruvbox
 set background=dark
 
-hi LineNr guifg=#5eacd3 
+hi LineNr guifg=#5eacd3
 hi Normal guibg=NONE ctermbg=NONE
 highlight netrwDir guifg=#5eacd3
 highlight qfFileName guifg=#aed75f
@@ -125,16 +127,23 @@ set history=9000
 set encoding=utf-8
 set colorcolumn=80          " enable color column
 set number			    	" set line numbers
-set rnu                     " relative number of line
 filetype indent on			" set filetype specific indent
 set wildmenu				" visual autocomplete for command menu
 set wildmode=longest:full,full
 set lazyredraw				" redraw screen when needed
 set showmatch				" highlight matching [({})]
 set visualbell				" flash screen when error
-set mouse=a			    	" enable mouse for all mode
 set cmdheight=2
 set splitbelow
+set noshowmode
+set mouse=a
+
+" Line number setting
+augroup Number
+    autocmd!
+    autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set rnu | set nocursorline | endif
+    autocmd BufLeave,FocusLost,InsertEnter,WinLeave * if &nu | set nornu | set cursorline | hi CursorLine guibg=None guifg=None | endif
+augroup END
 
 " Searching
 set incsearch				" set incremental search (search as characters are entered)
@@ -143,6 +152,8 @@ set ignorecase				" insensitive case searching
 set smartcase				" insensitive case searching
 
 " File writing and update
+set completeopt=menuone,noinsert,noselect
+set noswapfile
 set hidden
 set nobackup
 set nowritebackup
@@ -153,8 +164,6 @@ set undofile
 
 
 " __________ FILES/PLUGINS CONFIG __________
-
-set noswapfile
 
 " vim open .tex file as LaTeX file instead of plaintex file
 let g:tex_flavor = 'latex'
@@ -167,32 +176,25 @@ let g:python_highlight_space_errors = 0
 
 " setting for nvim-lspconfig and completion-nvim
 
-" Set completeopt to have a better completion experience
-set completeopt=menuone,noinsert,noselect
-
 let g:completion_matching_strategy_list=['exact', 'substring', 'fuzzy']
 lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
 lua require'lspconfig'.clangd.setup{ on_attach=require'completion'.on_attach }
 lua require'lspconfig'.pyls.setup{ on_attach=require'completion'.on_attach }
 
+lua << EOF
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+        underline = true,
+        virtual_text = true,
+        signs = true,
+        update_in_insert = true,
+    }
+)
+EOF
+
 " Use <Tab> and <S-Tab> to navigate through popup menu
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-let g:diagnostic_enable_virtual_text = 1
-let g:diagnostic_enable_underline = 0
-let g:diagnostic_auto_popup_while_jump = 1
 
 nnoremap <leader>gd :lua vim.lsp.buf.definition()<CR>
 nnoremap <leader>gn :lua vim.lsp.buf.rename()<CR>
@@ -210,7 +212,6 @@ let g:lightline={
     \ }
 
 " setting for fzf
-nnoremap <leader>pf :Files<CR>
 let g:fzf_layout = { "window": { "width": 0.8, "height": 0.8 } }
 let $FZF_DEFAULT_OPTS="--reverse"
 unlet g:fzf_colors
@@ -234,11 +235,10 @@ nmap ( <Plug>(GitGutterPrevHunk)
 
 let g:gitgutter_enabled=1
 let g:gitgutter_map_keys=0
-
 " setting for fugitive
 nmap <leader>gs :G<CR>
 
-" setting for searching (ag.vim and CocSearch)
+" setting for searching ag.vim
 if executable('rg')
     let g:rg_derive_root='true'
 endif
@@ -247,12 +247,38 @@ endif
 lua require'nvim-treesitter.configs'.setup { highlight = { enable = true } }
 
 " setting for telescope
-lua require('telescope').setup({defaults = {file_sorter = require('telescope.sorters').get_fzy_sorter}})
+lua << EOF
+require('telescope').setup({
+    defaults = {
+        file_sorter = require('telescope.sorters').get_fzy_sorter,
+        file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
+    }
+})
+EOF
+
 nnoremap <leader>pf :lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>pg :lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>pb :lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>ph :lua require('telescope.builtin').help_tags()<cr>
 nnoremap <C-p> :GFiles<CR>
+
+" highlight yank
+augroup LuaHighlight
+  autocmd!
+  autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank()
+augroup END
+
+" trim white space
+fun! TrimWhiteSpace()
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfun
+
+augroup TrimSpaceOnSave
+    autocmd!
+    autocmd BufWritePre * :call TrimWhiteSpace()
+augroup END
 
 
 " __________ CUSTOM THINGS TO REMIND ME HOW TO DO VIM THE RIGHT WAY __________
