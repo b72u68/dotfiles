@@ -1,12 +1,10 @@
 " __________ PLUGINS __________
-
 call plug#begin('~/.vim/plugged')
 
 " autocompletion and lsp
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'lervag/vimtex'
 
 " programming language highlighting
 Plug 'ap/vim-css-color'
@@ -22,9 +20,9 @@ Plug 'gruvbox-community/gruvbox'
 Plug 'preservim/nerdcommenter'
 Plug 'szw/vim-maximizer'
 Plug 'mbbill/undotree'
-Plug 'b72u68/vim-chtsh'
 Plug 'hoob3rt/lualine.nvim'
-"Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'b72u68/vim-chtsh'
 
 " NeoVim Treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -59,7 +57,7 @@ map <leader>q :q!<CR>
 map <leader>w :w<CR>
 
 " for directory tree
-let g:netrw_browse_split=2
+let g:netrw_browse_split=4
 let g:netrw_banner=0
 let g:netrw_winsize=30
 let g:netrw_localrmdir='rm -r'
@@ -82,17 +80,23 @@ nnoremap <leader>u :UndotreeShow<CR>
 " force reload lsp
 nnoremap <leader>rl :lua vim.lsp.stop_client(vim.lsp.get_active_clients())<CR> <bar> :edit<CR>
 
-" cheat sheet
-nmap <leader>ch :CheatSheet<CR>
-
 " move the cursor in to the parentheses
 imap "" ""<esc>i
 imap '' ''<esc>i
 imap () ()<esc>i
 imap [] []<esc>i
 imap {} {}<esc>i
-imap $$ $$<esc>i
 imap <> <><esc>i
+imap $$ $$<esc>i
+
+" Copy to clipboard
+vnoremap  <leader>y  "+y
+nnoremap  <leader>Y  "+yg_
+nnoremap  <leader>yy  "+yy
+
+" Paste from clipboard
+nnoremap <leader>p "+p
+nnoremap <leader>P "+P
 
 
 " __________ BASIC SETTINGS __________
@@ -109,8 +113,8 @@ if exists('+termguicolors')
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 
-let g:gruvbox_contrast_dark='hard'
-let g:gruvbox_invert_selection='0'
+let g:gruvbox_contrast_dark='medium'
+let g:gruvbox_invert_selection=0
 
 colorscheme gruvbox
 set background=dark
@@ -121,6 +125,9 @@ highlight netrwDir guifg=#5eacd3
 highlight qfFileName guifg=#aed75f
 "hi StatusLine guibg=#0B0C12 guifg=white gui=bold
 "hi ColorColumn guibg=#0B0C12
+
+" Copy paste from clipboard
+set clipboard=unnamedplus
 
 " Spaces and Tabs
 set autoindent				" set auto indent
@@ -165,7 +172,6 @@ set shortmess+=c
 set undodir=~/.vim/undodir
 set undofile
 
-
 " __________ FILES/PLUGINS CONFIG __________
 
 " vim open .tex file as LaTeX file instead of plaintex file
@@ -173,6 +179,7 @@ let g:tex_flavor = 'latex'
 
 " setting for python
 set pyxversion=3
+let g:python3_host_prog = '/usr/bin/python3'
 let g:pymode_python = 'python3'
 let g:python_highlight_all = 1
 let g:python_highlight_indent_errors = 0
@@ -185,15 +192,13 @@ let g:completion_sorting = "length"
 let g:completion_matching_ignore_case = 1
 let g:completion_enable_auto_paren = 1
 
-lua require'lspconfig'.clangd.setup{ on_attach=require'completion'.on_attach }
-lua require'lspconfig'.pyls.setup{ on_attach=require'completion'.on_attach }
-lua require'lspconfig'.texlab.setup{ on_attach=require'completion'.on_attach }
-lua require'lspconfig'.ocamlls.setup{ on_attach=require'completion'.on_attach }
+lua require'lspconfig'.pylsp.setup{ on_attach=require'completion'.on_attach }
+lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
 
 lua << EOF
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics, {
-        underline = true,
+        underline = false,
         virtual_text = true,
         signs = true,
         update_in_insert = true,
@@ -207,6 +212,7 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 nnoremap <leader>gd :lua vim.lsp.buf.definition()<CR>
 nnoremap <leader>gn :lua vim.lsp.buf.rename()<CR>
+nnoremap <leader>K :lua vim.lsp.buf.hover()<CR>
 
 " setting for vim-gitgutter
 highlight GitGutterAdd guifg=#009900 ctermfg=Green
@@ -239,19 +245,13 @@ lua require'nvim-treesitter.configs'.setup { highlight = { enable = true } }
 lua << EOF
 require('telescope').setup {
     defaults = {
-        icons_enabled = false,
         file_sorter = require('telescope.sorters').get_fzy_sorter,
         selection_caret = ' > ',
         prompt_prefix = ' > ',
         file_previewer   = require('telescope.previewers').vim_buffer_cat.new,
         grep_previewer   = require('telescope.previewers').vim_buffer_vimgrep.new,
         qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
-        layout_strategy = "flex",
-        layout_defaults = {
-            vertical = {
-                mirror = true,
-            },
-        },
+        layout_strategy = "flex"
     },
     extensions = {
         fzy_native = {
@@ -264,12 +264,12 @@ require('telescope').setup {
 require('telescope').load_extension('fzy_native')
 EOF
 
-nnoremap <leader>pf :lua require('telescope.builtin').find_files()<cr>
-nnoremap <leader>pg :lua require('telescope.builtin').git_files()<cr>
-nnoremap <leader>pr :lua require('telescope.builtin').live_grep()<cr>
-nnoremap <leader>ps :lua require('telescope.builtin').grep_string()<cr>
-nnoremap <leader>pb :lua require('telescope.builtin').buffers()<cr>
-nnoremap <leader>ph :lua require('telescope.builtin').help_tags()<cr>
+nnoremap <leader>pf <cmd>Telescope find_files<cr>
+nnoremap <leader>pg <cmd>Telescope git_files<cr>
+nnoremap <leader>pr <cmd>Telescope live_grep<cr>
+nnoremap <leader>ps <cmd>Telescope grep_string<cr>
+nnoremap <leader>pb <cmd>Telescope buffers<cr>
+nnoremap <leader>ph <cmd>Telescope help_tags<cr>
 
 " lualine.nvim setup
 lua << EOF
