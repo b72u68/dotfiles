@@ -1,6 +1,6 @@
 {
   "coc.preferences.formatOnSaveFiletypes": ["css", "markdown", "javascript",
-  "typescript", "html", "javascriptreact", "typescriptreact"],
+  "typescript", "html", "javascriptreact", "typescriptreact", "python"],
   "suggest.autoTrigger": "none",
   "suggest.timeout": 1,
   "diagnostic.enable": false

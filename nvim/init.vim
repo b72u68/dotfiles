@@ -67,8 +67,8 @@ let g:netrw_banner=0
 let g:netrw_winsize=30
 let g:netrw_localrmdir='rm -r'
 let g:netrw_list_hide='__pycache__,\.swp,*\.swp,.DS_Store'
-nnoremap <C-n> :vsplit <bar> :Ex <bar> :vertical resize 30<CR>
-nnoremap <leader>+ :vertical resize +5<CR>
+nnoremap <C-n> :Vex<bar> :vertical resize 30<CR>
+nnoremap <leader>= :vertical resize +5<CR>
 nnoremap <leader>- :vertical resize -5<CR>
 nnoremap <leader>rp :resize 100<CR>
 
@@ -140,7 +140,7 @@ if executable('rg')
 endif
 
 "set treesitter syntax highlighting
-lua require'nvim-treesitter.configs'.setup {indent = { enable = true }, highlight = { enable = true }, incremental_selection = { enable = true }, textobjects = { enable = true }}
+lua require'nvim-treesitter.configs'.setup{highlight={ enable=true }, incremental_selection={ enable=true }, textobjects={ enable=true }}
 
 " highlight yank
 augroup LuaHighlight

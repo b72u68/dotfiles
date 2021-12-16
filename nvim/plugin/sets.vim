@@ -46,3 +46,4 @@ set shortmess+=c
 set undodir=~/.vim/undodir
 set undofile
 
+set rtp^="/home/edo/.opam/default/share/ocp-indent/vim"

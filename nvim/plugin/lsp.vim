@@ -38,7 +38,7 @@ end
 require'lspconfig'.pylsp.setup(config())
 require'lspconfig'.tsserver.setup(config())
 require'lspconfig'.texlab.setup(config())
-require'lspconfig'.ocamlls.setup(config())
+require'lspconfig'.ocamllsp.setup(config())
 EOF
 
 let g:compe = {}
