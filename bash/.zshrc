@@ -103,6 +103,11 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias cmd='cmd.exe'
+alias open='cmd.exe /c start'
+alias vim='nvim'
+alias work='cd /mnt/c/Users/edoga/Documents/Side\ Projects'
+alias iit='cd /mnt/c/Users/edoga/Documents/IIT'
 
 autoload -U compinit
 zstyle ':completion:*' menu select
