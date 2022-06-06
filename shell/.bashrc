@@ -119,5 +119,4 @@ fi
 
 # aliases
 alias cmd='cmd.exe'
-alias open='cmd.exe /c start' 
-alias vim='/usr/bin/nvim'
+alias open='cmd.exe /c start'
