@@ -73,8 +73,8 @@ nnoremap <leader>- :vertical resize -5<CR>
 nnoremap <leader>rp :resize 100<CR>
 
 " short key to open terminal
-nnoremap <leader>tu :botright vsplit <bar> :terminal<CR>
-nnoremap <leader>th :split <bar> :resize 10 <bar> :terminal<CR>
+nnoremap <leader>tu :rightb vsplit <bar>:terminal<CR>
+nnoremap <leader>th :bel split <bar>:resize 10 <bar>:terminal<CR>
 
 " focus on pane
 nnoremap <leader>m :MaximizerToggle!<CR>
@@ -112,15 +112,7 @@ let g:python_highlight_all = 1
 let g:python_highlight_indent_errors = 0
 let g:python_highlight_space_errors = 0
 
-let g:opamshare = substitute(system('opam var share'),'\n$','','''')
-execute "set rtp+=" . g:opamshare . "/merlin/vim"
-
 " setting for vim-gitgutter
-highlight GitGutterAdd guifg=#009900 ctermfg=Green
-highlight GitGutterChange guifg=#bbbb00 ctermfg=Yellow
-highlight GitGutterDelete guifg=#ff2222 ctermfg=Red
-highlight GitGutterChangeDelete guifg=#ff2222 ctermfg=Red
-
 let g:gitgutter_sign_added = '+'
 let g:gitgutter_sign_modified = '~'
 let g:gitgutter_sign_removed = '-'
@@ -169,6 +161,15 @@ if executable(s:clip)
         autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
     augroup END
 endif
+
+autocmd Filetype c packadd termdebug
+
+let g:termdebug_popup = 0
+let g:termdebug_wide = 50
+
+autocmd Filetype c setlocal shiftwidth=2 softtabstop=2 expandtab
+autocmd Filetype h setlocal shiftwidth=2 softtabstop=2 expandtab
+autocmd Filetype cpp setlocal shiftwidth=2 softtabstop=2 expandtab
 
 
 " __________ CUSTOM THINGS TO REMIND ME HOW TO DO VIM THE RIGHT WAY __________
