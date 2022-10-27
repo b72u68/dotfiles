@@ -1,6 +1,5 @@
 -- [[__________ FILES/PLUGINS CONFIG __________]]
 
-
 -- Open .tex file as LaTeX instead of Plaintex
 vim.g.tex_flavor = "latex"
 
