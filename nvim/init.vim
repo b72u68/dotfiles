@@ -1,4 +1,5 @@
 " __________ PLUGINS __________
+
 call plug#begin('~/.vim/plugged')
 
 " builtin language server
@@ -11,25 +12,23 @@ Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'lervag/vimtex'
 
-" programming language highlighting
-Plug 'ap/vim-css-color'
-
 " version control
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 
 " nice colorscheme
-Plug 'gruvbox-community/gruvbox'
+Plug 'ellisonleao/gruvbox.nvim'
+Plug 'EdenEast/nightfox.nvim'
 
 " utilities
 Plug 'preservim/nerdcommenter'
 Plug 'szw/vim-maximizer'
 Plug 'mbbill/undotree'
 Plug 'hoob3rt/lualine.nvim'
-Plug 'b72u68/vim-chtsh'
 
 " NeoVim Treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
 
 " NeoVim telescope
 Plug 'nvim-lua/popup.nvim'
@@ -38,101 +37,6 @@ Plug 'nvim-lua/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
 call plug#end()
-
-
-" __________ KEY MAPPINGS __________
-
-" map <leader> key to <space> key
-let mapleader=" "
-
-" turn off highlighting after searching
-map <leader>nl :nohl<CR>
-
-" Split panes navigation
-map <leader>h <C-w>h
-map <leader>j <C-w>j
-map <leader>k <C-w>k
-map <leader>l <C-w>l
-
-" short key for exiting
-map <leader>q :q!<CR>
-
-" short key for saving file
-map <leader>w :w<CR>
-
-" for directory tree
-let g:netrw_altv=1
-let g:netrw_browse_split=4
-let g:netrw_banner=0
-let g:netrw_winsize=30
-let g:netrw_localrmdir='rm -r'
-let g:netrw_list_hide='__pycache__,\.swp,*\.swp,.DS_Store'
-nnoremap <C-n> :Vex<bar> :vertical resize 30<CR>
-nnoremap <leader>= :vertical resize +5<CR>
-nnoremap <leader>- :vertical resize -5<CR>
-nnoremap <leader>rp :resize 100<CR>
-
-" short key to open terminal
-nnoremap <leader>tu :rightb vsplit <bar>:terminal<CR>
-nnoremap <leader>th :bel split <bar>:resize 10 <bar>:terminal<CR>
-
-" focus on pane
-nnoremap <leader>m :MaximizerToggle!<CR>
-
-" call undotree
-nnoremap <leader>u :UndotreeShow<CR>
-
-" force reload lsp
-nnoremap <leader>rl :lua vim.lsp.stop_client(vim.lsp.get_active_clients())<CR> <bar> :edit<CR>
-
-" move the cursor in to the parentheses
-imap "" ""<esc>i
-imap '' ''<esc>i
-imap () ()<esc>i
-imap [] []<esc>i
-imap {} {}<esc>i
-imap <> <><esc>i
-imap $$ $$<esc>i
-imap `` ``<esc>i
-
-" cheat sheet
-nnoremap <leader>ch :CheatSheet<CR>
-
-
-" __________ FILES/PLUGINS CONFIG __________
-
-" vim open .tex file as LaTeX file instead of plaintex file
-let g:tex_flavor = 'latex'
-
-" setting for python
-set pyxversion=3
-let g:python3_host_prog = '/usr/bin/python3'
-let g:pymode_python = 'python3'
-let g:python_highlight_all = 1
-let g:python_highlight_indent_errors = 0
-let g:python_highlight_space_errors = 0
-
-" setting for vim-gitgutter
-let g:gitgutter_sign_added = '+'
-let g:gitgutter_sign_modified = '~'
-let g:gitgutter_sign_removed = '-'
-
-nmap ) <Plug>(GitGutterNextHunk)
-nmap ( <Plug>(GitGutterPrevHunk)
-
-let g:gitgutter_enabled=1
-let g:gitgutter_map_keys=0
-
-" setting for fugitive
-nmap <leader>gs :G<CR>
-
-" setting for searching ag.vim
-if executable('rg')
-    let g:rg_derive_root='true'
-endif
-
-"set treesitter syntax highlighting
-lua require'nvim-treesitter.configs'.setup{highlight={ enable=true }, incremental_selection={ enable=true }, textobjects={ enable=true }}
 
 " highlight yank
 augroup LuaHighlight
@@ -162,28 +66,13 @@ if executable(s:clip)
     augroup END
 endif
 
-autocmd Filetype c packadd termdebug
+" set .iit files to have iitran filetype
+autocmd BufNewFile,BufRead *.iit set filetype=iitran
 
-let g:termdebug_popup = 0
-let g:termdebug_wide = 50
-
-autocmd Filetype c setlocal shiftwidth=2 softtabstop=2 expandtab
-autocmd Filetype h setlocal shiftwidth=2 softtabstop=2 expandtab
-autocmd Filetype cpp setlocal shiftwidth=2 softtabstop=2 expandtab
-
-
-" __________ CUSTOM THINGS TO REMIND ME HOW TO DO VIM THE RIGHT WAY __________
-
-" Try to prevent bad habits like using the arrow keys for movement.
-
-" Do this in normal mode...
-nnoremap <Left>  :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up>    :echoe "Use k"<CR>
-nnoremap <Down>  :echoe "Use j"<CR>
-
-" ...and in insert mode
-inoremap <Left>  <ESC>:echoe "Use h"<CR>
-inoremap <Right> <ESC>:echoe "Use l"<CR>
-inoremap <Up>    <ESC>:echoe "Use k"<CR>
-inoremap <Down>  <ESC>:echoe "Use j"<CR>
+lua << EOF
+vim.filetype.add({
+    extension = {
+        iit="iitran"
+    }
+})
+EOF

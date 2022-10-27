@@ -1,4 +1,3 @@
-lua << EOF
 require('lualine').setup{
     options = {
         icons_enabled = false,
@@ -6,4 +5,3 @@ require('lualine').setup{
         component_separators = '|'
     }
 }
-EOF
