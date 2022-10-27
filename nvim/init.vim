@@ -52,10 +52,10 @@ fun! TrimWhiteSpace()
 endfun
 
 " trim white space on save
-"augroup TrimSpaceOnSave
-    "autocmd!
-    "autocmd BufWritePre * :call TrimWhiteSpace()
-"augroup END
+augroup TrimSpaceOnSave
+    autocmd!
+    autocmd BufWritePre * :call TrimWhiteSpace()
+augroup END
 
 " WSL yank support
 let s:clip = '/mnt/c/Windows/System32/clip.exe'  " change this path according to your mount point
