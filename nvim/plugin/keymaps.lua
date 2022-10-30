@@ -67,3 +67,7 @@ vim.api.nvim_set_keymap("x", "<leader>cc", [[<Plug>NERDCommenterComment]], {nore
 vim.api.nvim_set_keymap("n", "<leader>cc", [[<Plug>NERDCommenterComment]], {noremap = false, silent = true, expr = false})
 vim.api.nvim_set_keymap("x", "<leader>cn", [[<Plug>NERDCommenterNested]], {noremap = false, silent = true, expr = false})
 vim.api.nvim_set_keymap("n", "<leader>cn", [[<Plug>NERDCommenterNested]], {noremap = false, silent = true, expr = false})
+
+-- vim-chtsh
+vim.api.nvim_set_keymap("n", "<leader>ch", [[<Cmd>CheatSheet<CR>]], {noremap = false, silent = true, expr = false})
+vim.api.nvim_set_keymap("n", "<leader>cl", [[<Cmd>CheatList<CR>]], {noremap = false, silent = true, expr = false})

@@ -1,8 +1,8 @@
-" __________ PLUGINS __________
+" [[__________ PLUGINS __________]]
 
 call plug#begin('~/.vim/plugged')
 
-" builtin language server
+" Language server
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -12,25 +12,25 @@ Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'lervag/vimtex'
 
-" version control
+" Version control
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 
-" nice colorscheme
-Plug 'ellisonleao/gruvbox.nvim'
-Plug 'EdenEast/nightfox.nvim'
+" Make NeoVim pretty
+Plug 'gruvbox-community/gruvbox'
 
-" utilities
+" Utilities
 Plug 'preservim/nerdcommenter'
 Plug 'szw/vim-maximizer'
 Plug 'mbbill/undotree'
 Plug 'hoob3rt/lualine.nvim'
+Plug 'b72u68/vim-chtsh'
 
-" NeoVim Treesitter
+" Treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 
-" NeoVim telescope
+" Telescope
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-lua/telescope.nvim'
