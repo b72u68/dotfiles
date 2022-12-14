@@ -18,6 +18,7 @@ Plug 'tpope/vim-fugitive'
 
 " Make NeoVim pretty
 Plug 'gruvbox-community/gruvbox'
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 
 " Utilities
 Plug 'preservim/nerdcommenter'
@@ -46,6 +47,10 @@ augroup END
 
 " trim white space
 fun! TrimWhiteSpace()
+    " Don't strip traling spaces in sml files
+    if &ft =~ 'sml'
+        return
+    endif
     let l:save = winsaveview()
     keeppatterns %s/\s\+$//e
     call winrestview(l:save)

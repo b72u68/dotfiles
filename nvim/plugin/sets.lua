@@ -30,6 +30,9 @@ vim.opt.splitbelow = true
 vim.opt.wrap = false
 vim.opt.errorbells = false              -- turn off error bells
 vim.opt.cursorline = true               -- turn on cursorline
+vim.opt.signcolumn = "yes"              -- turn on signcolumn
+
+-- Mouse behavior
 vim.opt.mouse = "a"                     -- enable mouse
 
 -- Searching
