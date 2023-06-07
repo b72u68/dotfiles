@@ -3,21 +3,29 @@
 call plug#begin('~/.vim/plugged')
 
 " Language server
+Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
+Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lspconfig'
+Plug 'VonHeikemen/lsp-zero.nvim'
+Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'hrsh7th/nvim-cmp'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-nvim-lua'
+Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'lervag/vimtex'
+
+" Snippets
+Plug 'L3MON4D3/LuaSnip'
 
 " Version control
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 
 " Make NeoVim pretty
-Plug 'gruvbox-community/gruvbox'
+Plug 'ellisonleao/gruvbox.nvim'
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 
 " Utilities
@@ -25,11 +33,10 @@ Plug 'preservim/nerdcommenter'
 Plug 'szw/vim-maximizer'
 Plug 'mbbill/undotree'
 Plug 'hoob3rt/lualine.nvim'
-Plug 'b72u68/vim-chtsh'
+Plug '~/Project/vim-chtsh'
 
 " Treesitter
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'nvim-treesitter/playground'
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 
 " Telescope
 Plug 'nvim-lua/popup.nvim'
@@ -47,8 +54,8 @@ augroup END
 
 " trim white space
 fun! TrimWhiteSpace()
-    " Don't strip traling spaces in sml files
-    if &ft =~ 'sml'
+    " Don't strip traling spaces in sml or haskell files
+    if &ft =~ 'sml\|haskell'
         return
     endif
     let l:save = winsaveview()
@@ -71,13 +78,5 @@ if executable(s:clip)
     augroup END
 endif
 
-" set .iit files to have iitran filetype
-autocmd BufNewFile,BufRead *.iit set filetype=iitran
-
-lua << EOF
-vim.filetype.add({
-    extension = {
-        iit="iitran"
-    }
-})
-EOF
+" ocaml format config
+set rtp^="/home/edo/.opam/default/share/ocp-indent/vim"

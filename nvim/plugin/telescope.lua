@@ -1,12 +1,29 @@
-require('telescope').setup {
+local telescope = require('telescope')
+local builtin = require('telescope.builtin')
+local previewers = require('telescope.previewers')
+local sorters = require('telescope.sorters')
+
+local opts = {noremap = true, silent = true, expr = false}
+
+telescope.load_extension('fzy_native')
+
+telescope.setup {
     defaults = {
-        file_sorter = require('telescope.sorters').get_fzy_sorter,
+        file_sorter = sorters.get_fzy_sorter,
         selection_caret = ' > ',
         prompt_prefix = ' > ',
-        file_previewer   = require('telescope.previewers').vim_buffer_cat.new,
-        grep_previewer   = require('telescope.previewers').vim_buffer_vimgrep.new,
-        qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
-        layout_strategy = "flex"
+        file_previewer   = previewers.vim_buffer_cat.new,
+        grep_previewer   = previewers.vim_buffer_vimgrep.new,
+        qflist_previewer = previewers.vim_buffer_qflist.new,
+        layout_strategy = "flex",
+        layout_config = {
+            horizontal = {
+                preview_width = 0.5,
+            },
+            vertical = {
+                preview_height = 0.3,
+            }
+        }
     },
     extensions = {
         fzy_native = {
@@ -16,11 +33,9 @@ require('telescope').setup {
     }
 }
 
-require('telescope').load_extension('fzy_native')
-
-vim.api.nvim_set_keymap("n", "<leader>pf", [[<Cmd>Telescope find_files<CR>]], {noremap = true, silent = true, expr = false})
-vim.api.nvim_set_keymap("n", "<leader>pg", [[<Cmd>Telescope git_files<CR>]], {noremap = true, silent = true, expr = false})
-vim.api.nvim_set_keymap("n", "<leader>pr", [[<Cmd>Telescope live_grep<CR>]], {noremap = true, silent = true, expr = false})
-vim.api.nvim_set_keymap("n", "<leader>ps", [[<Cmd>Telescope grep_string<CR>]], {noremap = true, silent = true, expr = false})
-vim.api.nvim_set_keymap("n", "<leader>pb", [[<Cmd>Telescope buffers<CR>]], {noremap = true, silent = true, expr = false})
-vim.api.nvim_set_keymap("n", "<leader>ph", [[<Cmd>Telescope help_tags<CR>]], {noremap = true, silent = true, expr = false})
+vim.keymap.set("n", "<leader>pf", function() builtin.find_files() end, opts)
+vim.keymap.set("n", "<leader>pg", function() builtin.git_files() end, opts)
+vim.keymap.set("n", "<leader>pr", function() builtin.live_grep() end, opts)
+vim.keymap.set("n", "<leader>ps", function() builtin.grep_string() end, opts)
+vim.keymap.set("n", "<leader>pb", function() builtin.buffers() end, opts)
+vim.keymap.set("n", "<leader>ph", function() builtin.help_tags() end, opts)
