@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="$USER/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -104,6 +104,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias open='cmd.exe /c start'
+alias proj='cd $HOME/Projects'
 
 autoload -U compinit
 zstyle ':completion:*' menu select
@@ -123,3 +124,10 @@ bindkey -M menuselect 'j' vi-down-line-or-history
 
 # export python path
 export PATH="$PATH:$USER/.local/bin"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# opam configuration
+[[ ! -r /home/edo/.opam/opam-init/init.zsh ]] || source /home/edo/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
