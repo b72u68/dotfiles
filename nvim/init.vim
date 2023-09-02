@@ -1,5 +1,19 @@
 " [[__________ PLUGINS __________]]
 
+
+" Install vim-plug if not found
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+\| endif
+
+" Load in plugins
+"
 call plug#begin('~/.vim/plugged')
 
 " Language server
@@ -33,7 +47,6 @@ Plug 'preservim/nerdcommenter'
 Plug 'szw/vim-maximizer'
 Plug 'mbbill/undotree'
 Plug 'hoob3rt/lualine.nvim'
-Plug '~/Project/vim-chtsh'
 
 " Treesitter
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
@@ -78,5 +91,6 @@ if executable(s:clip)
     augroup END
 endif
 
-" ocaml format config
-set rtp^="/home/edo/.opam/default/share/ocp-indent/vim"
+" add merlin to vim runtime
+let g:opamshare = substitute(system('opam var share'),'\n$','','''')
+     execute "set rtp+=" . g:opamshare . "/merlin/vim"

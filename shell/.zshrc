@@ -103,7 +103,6 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias cmd='cmd.exe'
 alias open='cmd.exe /c start'
 
 autoload -U compinit
@@ -124,6 +123,3 @@ bindkey -M menuselect 'j' vi-down-line-or-history
 
 # export python path
 export PATH="$PATH:$USER/.local/bin"
-
-# export browser path
-export BROWSER="$(which brave)"

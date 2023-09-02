@@ -6,8 +6,6 @@ require("mason").setup()
 lsp.ensure_installed({
     'pyright',
     'tsserver',
-    'hls',
-    'ocamllsp',
     'texlab',
     'lua_ls'
 })
@@ -43,8 +41,8 @@ lsp.on_attach(function(client, bufnr)
     vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
 end)
 
-require('lspconfig').hls.setup({ filetypes = { 'haskell', 'lhaskell', 'cabal' } })
 require('lspconfig').ocamllsp.setup({})
+require('lspconfig').racket_langserver.setup({})
 
 vim.diagnostic.config({
     underline = false,
