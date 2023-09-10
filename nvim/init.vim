@@ -13,7 +13,6 @@ autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
 \| endif
 
 " Load in plugins
-"
 call plug#begin('~/.vim/plugged')
 
 " Language server
@@ -91,6 +90,6 @@ if executable(s:clip)
     augroup END
 endif
 
-" add merlin to vim runtime
-let g:opamshare = substitute(system('opam var share'),'\n$','','''')
-     execute "set rtp+=" . g:opamshare . "/merlin/vim"
+" Set up ocamlformat for neovim
+set rtp^="/home/edo/.opam/default/share/ocp-indent/vim"
+
