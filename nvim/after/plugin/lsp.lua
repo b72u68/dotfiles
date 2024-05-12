@@ -10,8 +10,10 @@ lsp.on_attach(function(client, bufnr)
     vim.keymap.set("n", "<leader>rn", function() vim.lsp.buf.rename() end, opts)
 end)
 
-lspconfig.ocamllsp.setup({})
-lspconfig.pyright.setup({})
-lspconfig.tsserver.setup({})
+local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+lspconfig.ocamllsp.setup({ capabilities = lsp_capabilities })
+lspconfig.pyright.setup({ capabilities = lsp_capabilities  })
+lspconfig.tsserver.setup({ capabilities = lsp_capabilities })
 
 lsp.setup()
