@@ -16,19 +16,13 @@ autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
 call plug#begin('~/.vim/plugged')
 
 " Language server
-Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
-Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'VonHeikemen/lsp-zero.nvim'
-Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/vim-vsnip'
-Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-nvim-lua'
 Plug 'saadparwaiz1/cmp_luasnip'
-Plug 'lervag/vimtex'
 
 " Snippets
 Plug 'L3MON4D3/LuaSnip'
@@ -51,12 +45,14 @@ Plug 'hoob3rt/lualine.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 
 " Telescope
-Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-lua/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
 call plug#end()
+
+" load configs
+lua require('cfg')
 
 " highlight yank
 augroup LuaHighlight
@@ -66,10 +62,6 @@ augroup END
 
 " trim white space
 fun! TrimWhiteSpace()
-    " Don't strip traling spaces in sml or haskell files
-    if &ft =~ 'sml\|haskell'
-        return
-    endif
     let l:save = winsaveview()
     keeppatterns %s/\s\+$//e
     call winrestview(l:save)
@@ -80,16 +72,3 @@ augroup TrimSpaceOnSave
     autocmd!
     autocmd BufWritePre * :call TrimWhiteSpace()
 augroup END
-
-" WSL yank support
-let s:clip = '/mnt/c/Windows/System32/clip.exe'  " change this path according to your mount point
-if executable(s:clip)
-    augroup WSLYank
-        autocmd!
-        autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
-    augroup END
-endif
-
-" Set up ocamlformat for neovim
-set rtp^="/home/edo/.opam/default/share/ocp-indent/vim"
-

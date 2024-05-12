@@ -33,9 +33,9 @@ telescope.setup {
     }
 }
 
-vim.keymap.set("n", "<leader>pf", function() builtin.find_files() end, opts)
-vim.keymap.set("n", "<leader>pg", function() builtin.git_files() end, opts)
-vim.keymap.set("n", "<leader>pr", function() builtin.live_grep() end, opts)
-vim.keymap.set("n", "<leader>ps", function() builtin.grep_string() end, opts)
-vim.keymap.set("n", "<leader>pb", function() builtin.buffers() end, opts)
-vim.keymap.set("n", "<leader>ph", function() builtin.help_tags() end, opts)
+vim.keymap.set("n", "<leader>pf", builtin.find_files, opts)
+vim.keymap.set("n", "<leader>pg", builtin.git_files, opts)
+vim.keymap.set("n", "<leader>pr", builtin.live_grep, opts)
+vim.keymap.set("n", "<leader>ps", builtin.grep_string, opts)
+vim.keymap.set("n", "<leader>pb", builtin.buffers, opts)
+vim.keymap.set("n", "<leader>ph", builtin.help_tags, opts)
